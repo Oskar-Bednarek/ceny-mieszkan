@@ -1,0 +1,38 @@
+name: Update XML Daily
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Codziennie o 8:00 rano (czas polski)
+  
+  workflow_dispatch:  # Możliwość uruchomienia ręcznego
+
+jobs:
+  generate-xml:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install pandas openpyxl
+      
+      - name: Generate XML and MD5
+        run: |
+          python excel_to_xml.py
+      
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add kerim-ceny-mieszkan.xml
+          git add kerim-ceny-mieszkan.md5
+          git add Kerim-ceny-mieszkan-*.csv
+          git diff --quiet && git diff --staged --quiet || git commit -m "Automatyczna aktualizacja danych - $(date +'%Y-%m-%d')"
+          git push
