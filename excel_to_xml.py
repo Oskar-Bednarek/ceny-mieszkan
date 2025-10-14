@@ -14,8 +14,8 @@ import os
 
 # ==================== KONFIGURACJA ====================
 NAZWA_DEWELOPERA = "Kerim"
-EXTIDENT_DATASET = "kerim_ceny_mieszkan_2025_dataset"
-URL_BASE = "https://TWOJA-NAZWA.github.io/ceny-mieszkan/"  # Wypełnimy później
+EXTIDENT_DATASET = "kerim_ceny_mieszkan_dataset"
+URL_BASE = "https://oskar-bednarek.github.io/ceny-mieszkan/"
 
 # ==================== FUNKCJE ====================
 
