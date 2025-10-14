@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ns2:datasets xmlns:ns2="urn:otwarte-dane:harvester:1.13" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <dataset status="published">
-    <extIdent>kerim_ceny_mieszkan_2025_dataset</extIdent>
+    <extIdent>kerim_ceny_mieszkan_dataset</extIdent>
     <title>
       <polish>Ceny ofertowe mieszkań dewelopera Kerim w 2025 r.</polish>
       <english>Offer prices of apartments of developer Kerim in 2025.</english>
@@ -21,7 +21,7 @@
     <resources>
       <resource status="published">
         <extIdent>kerim_dane_20251014</extIdent>
-        <url>https://TWOJA-NAZWA.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-14.csv</url>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-14.csv</url>
         <title>
           <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-14</polish>
           <english>Offer prices for developer's apartments Kerim 2025-10-14</english>
