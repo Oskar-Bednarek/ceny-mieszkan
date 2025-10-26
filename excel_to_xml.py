@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Konwerter Excel → XML dla portalu dane.gov.pl
+Konwerter Excel → XML dla portalu dane.gov.pl (Opcja A - Historia)
 Kerim Sp. z o.o.
+Wersja 2.0 - Akumulacja resources (każdy dzień = nowy resource)
 """
 
 import pandas as pd
@@ -14,8 +15,11 @@ import os
 
 # ==================== KONFIGURACJA ====================
 NAZWA_DEWELOPERA = "Kerim"
-EXTIDENT_DATASET = "kerim_ceny_mieszkan_dataset"
+EXTIDENT_DATASET = "kerim_ceny_mieszkan_2025_dataset"
 URL_BASE = "https://oskar-bednarek.github.io/ceny-mieszkan/"
+
+XML_FILE = "kerim-ceny-mieszkan.xml"
+MD5_FILE = "kerim-ceny-mieszkan.md5"
 
 # ==================== FUNKCJE ====================
 
@@ -26,6 +30,22 @@ def wczytaj_excel(sciezka_excel):
     print(f"✅ Wczytano {len(df)} lokali")
     return df
 
+def wczytaj_istniejacy_xml():
+    """Wczytuje istniejący XML jeśli istnieje"""
+    if not os.path.exists(XML_FILE):
+        print("📄 Brak istniejącego XML - tworzę nowy")
+        return None
+    
+    try:
+        tree = ET.parse(XML_FILE)
+        root = tree.getroot()
+        print(f"✅ Wczytano istniejący XML")
+        return root
+    except Exception as e:
+        print(f"⚠️ Błąd wczytywania XML: {e}")
+        print("📄 Tworzę nowy XML")
+        return None
+
 def utworz_xml_root():
     """Tworzy główny element XML"""
     root = ET.Element('ns2:datasets')
@@ -33,8 +53,22 @@ def utworz_xml_root():
     root.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
     return root
 
-def dodaj_dataset(root, nazwa_dewelopera, rok):
-    """Dodaje główny element dataset (zbiór danych)"""
+def znajdz_lub_utworz_dataset(root, nazwa_dewelopera, rok):
+    """Znajduje istniejący dataset lub tworzy nowy"""
+    
+    # Szukaj istniejącego datasetu
+    ns = {'ns2': 'urn:otwarte-dane:harvester:1.13'}
+    datasets = root.findall('.//ns2:dataset', ns)
+    
+    for dataset in datasets:
+        extident = dataset.find('ns2:extIdent', ns)
+        if extident is not None and extident.text == EXTIDENT_DATASET:
+            print(f"✅ Znaleziono istniejący dataset: {EXTIDENT_DATASET}")
+            resources = dataset.find('ns2:resources', ns)
+            return dataset, resources
+    
+    # Jeśli nie znaleziono, utwórz nowy
+    print(f"📄 Tworzę nowy dataset: {EXTIDENT_DATASET}")
     dataset = ET.SubElement(root, 'dataset')
     dataset.set('status', 'published')
     
@@ -77,10 +111,27 @@ def dodaj_dataset(root, nazwa_dewelopera, rok):
     
     return dataset, resources
 
+def sprawdz_czy_resource_istnieje(resources, extident_szukany):
+    """Sprawdza czy resource o danym extIdent już istnieje"""
+    ns = {'ns2': 'urn:otwarte-dane:harvester:1.13'}
+    
+    for resource in resources.findall('ns2:resource', ns):
+        extident = resource.find('ns2:extIdent', ns)
+        if extident is not None and extident.text == extident_szukany:
+            return True
+    return False
+
 def dodaj_resource(resources, data_publikacji):
-    """Dodaje zasób (resource) - dane z konkretnego dnia"""
+    """Dodaje nowy resource - dane z konkretnego dnia"""
     
     extident_resource = f"kerim_dane_{data_publikacji.replace('-', '')}"[:36]
+    
+    # Sprawdź czy resource na ten dzień już istnieje
+    if sprawdz_czy_resource_istnieje(resources, extident_resource):
+        print(f"⚠️ Resource dla daty {data_publikacji} już istnieje - pomijam")
+        return False
+    
+    print(f"➕ Dodaję nowy resource: {extident_resource}")
     
     resource = ET.SubElement(resources, 'resource')
     resource.set('status', 'published')
@@ -119,21 +170,50 @@ def dodaj_resource(resources, data_publikacji):
     ET.SubElement(resource, 'hasHighValueDataFromEuropeanCommissionList').text = 'false'
     ET.SubElement(resource, 'hasResearchData').text = 'false'
     ET.SubElement(resource, 'containsProtectedData').text = 'false'
+    
+    return True
 
-def generuj_xml(df, data_publikacji=None):
-    """Generuje plik XML z danymi z DataFrame"""
+def policz_resources(resources):
+    """Liczy ile resources jest w XML"""
+    ns = {'ns2': 'urn:otwarte-dane:harvester:1.13'}
+    return len(resources.findall('ns2:resource', ns))
+
+def generuj_xml_z_akumulacja(df, data_publikacji=None):
+    """Generuje XML z akumulacją resources (Opcja A)"""
     
     if data_publikacji is None:
         data_publikacji = datetime.now().strftime('%Y-%m-%d')
     
     rok = datetime.now().year
     
-    print(f"🔨 Generuję XML dla daty: {data_publikacji}")
+    print(f"🔨 Generuję XML z akumulacją dla daty: {data_publikacji}")
     
-    root = utworz_xml_root()
-    dataset, resources = dodaj_dataset(root, NAZWA_DEWELOPERA, rok)
-    dodaj_resource(resources, data_publikacji)
+    # Wczytaj istniejący XML lub utwórz nowy
+    root = wczytaj_istniejacy_xml()
     
+    if root is None:
+        root = utworz_xml_root()
+    
+    # Znajdź lub utwórz dataset
+    dataset, resources = znajdz_lub_utworz_dataset(root, NAZWA_DEWELOPERA, rok)
+    
+    # Policz ile resources było przed
+    liczba_przed = policz_resources(resources)
+    print(f"📊 Resources przed: {liczba_przed}")
+    
+    # Dodaj nowy resource (jeśli nie istnieje)
+    dodano = dodaj_resource(resources, data_publikacji)
+    
+    # Policz ile resources jest teraz
+    liczba_po = policz_resources(resources)
+    print(f"📊 Resources po: {liczba_po}")
+    
+    if dodano:
+        print(f"✅ Dodano nowy resource dla {data_publikacji}")
+    else:
+        print(f"ℹ️ Resource dla {data_publikacji} już istniał")
+    
+    # Formatuj XML
     xml_str = minidom.parseString(ET.tostring(root, encoding='utf-8')).toprettyxml(indent="  ", encoding='utf-8')
     
     return xml_str
@@ -143,35 +223,43 @@ def generuj_md5(xml_content):
     md5_hash = hashlib.md5(xml_content).hexdigest()
     return md5_hash
 
-def zapisz_pliki(xml_content, nazwa_bazowa="kerim-ceny-mieszkan"):
+def zapisz_pliki(xml_content):
     """Zapisuje pliki XML i MD5"""
     
-    xml_path = f"{nazwa_bazowa}.xml"
-    with open(xml_path, 'wb') as f:
+    # Zapisz XML
+    with open(XML_FILE, 'wb') as f:
         f.write(xml_content)
-    print(f"✅ Zapisano XML: {xml_path}")
+    print(f"✅ Zapisano XML: {XML_FILE}")
     
+    # Wygeneruj i zapisz MD5
     md5_hash = generuj_md5(xml_content)
-    md5_path = f"{nazwa_bazowa}.md5"
-    with open(md5_path, 'w') as f:
+    with open(MD5_FILE, 'w') as f:
         f.write(md5_hash)
-    print(f"✅ Zapisano MD5: {md5_path}")
+    print(f"✅ Zapisano MD5: {MD5_FILE}")
     print(f"   Hash: {md5_hash}")
     
-    return xml_path, md5_path
+    return XML_FILE, MD5_FILE
 
 def generuj_csv_dla_portalu(df, data_publikacji):
     """Generuje plik CSV w formacie do przesłania na portal dane.gov.pl"""
     csv_path = f"Kerim-ceny-mieszkan-{data_publikacji}.csv"
+    
+    # Sprawdź czy CSV już istnieje
+    if os.path.exists(csv_path):
+        print(f"ℹ️ CSV dla {data_publikacji} już istnieje: {csv_path}")
+        return csv_path
+    
     df.to_csv(csv_path, index=False, encoding='utf-8')
-    print(f"✅ Zapisano CSV: {csv_path}")
+    print(f"✅ Zapisano nowy CSV: {csv_path}")
     return csv_path
+
+# ==================== GŁÓWNA FUNKCJA ====================
 
 def main():
     """Główna funkcja programu"""
     
     print("=" * 60)
-    print("🏢 KERIM - Generator XML dla portalu dane.gov.pl")
+    print("🏢 KERIM - Generator XML (Opcja A - Historia)")
     print("=" * 60)
     
     excel_file = "Kerim_Dane_ceny_mieszkan.xlsx"
@@ -182,17 +270,29 @@ def main():
         return
     
     try:
+        # Wczytaj dane
         df = wczytaj_excel(excel_file)
+        
+        # Data publikacji (dzisiejsza data)
         data_publikacji = datetime.now().strftime('%Y-%m-%d')
-        xml_content = generuj_xml(df, data_publikacji)
+        
+        # Generuj XML z akumulacją
+        xml_content = generuj_xml_z_akumulacja(df, data_publikacji)
+        
+        # Zapisz pliki XML i MD5
         xml_path, md5_path = zapisz_pliki(xml_content)
+        
+        # Generuj CSV dla portalu (tylko jeśli nie istnieje)
         csv_path = generuj_csv_dla_portalu(df, data_publikacji)
         
         print("\n" + "=" * 60)
-        print("✅ SUKCES! Pliki wygenerowane:")
-        print(f"   📄 {xml_path}")
+        print("✅ SUKCES! Pliki zaktualizowane:")
+        print(f"   📄 {xml_path} (akumulacja resources)")
         print(f"   🔐 {md5_path}")
         print(f"   📊 {csv_path}")
+        print("=" * 60)
+        print("\n💡 Opcja A aktywna: Każdy dzień dodaje nowy resource")
+        print("   Historia cen jest zachowana w zbiorze danych!")
         print("=" * 60)
         
     except Exception as e:
