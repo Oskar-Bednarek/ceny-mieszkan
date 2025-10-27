@@ -3,15 +3,16 @@
 """
 Konwerter Excel → XML dla portalu dane.gov.pl (Opcja A - Historia)
 Kerim Sp. z o.o.
-Wersja 2.0 - Akumulacja resources (każdy dzień = nowy resource)
+Wersja 3.0 - Skanuje wszystkie CSV w folderze i tworzy resource dla każdego
 """
 
 import pandas as pd
 from datetime import datetime
 import hashlib
 import xml.etree.ElementTree as ET
-from xml.dom import minidom
 import os
+import re
+import glob
 
 # ==================== KONFIGURACJA ====================
 NAZWA_DEWELOPERA = "Kerim"
@@ -30,21 +31,25 @@ def wczytaj_excel(sciezka_excel):
     print(f"✅ Wczytano {len(df)} lokali")
     return df
 
-def wczytaj_istniejacy_xml():
-    """Wczytuje istniejący XML jeśli istnieje"""
-    if not os.path.exists(XML_FILE):
-        print("📄 Brak istniejącego XML - tworzę nowy")
-        return None
+def znajdz_wszystkie_csv():
+    """Znajduje wszystkie pliki CSV z cenami w folderze"""
+    pattern = "Kerim-ceny-mieszkan-*.csv"
+    pliki = glob.glob(pattern)
     
-    try:
-        tree = ET.parse(XML_FILE)
-        root = tree.getroot()
-        print(f"✅ Wczytano istniejący XML")
-        return root
-    except Exception as e:
-        print(f"⚠️ Błąd wczytywania XML: {e}")
-        print("📄 Tworzę nowy XML")
-        return None
+    # Wyciągnij daty z nazw plików
+    daty = []
+    for plik in pliki:
+        # Szukaj daty w formacie YYYY-MM-DD
+        match = re.search(r'(\d{4}-\d{2}-\d{2})', plik)
+        if match:
+            daty.append(match.group(1))
+    
+    daty.sort()  # Sortuj chronologicznie
+    print(f"📊 Znaleziono {len(daty)} plików CSV:")
+    for data in daty:
+        print(f"   - {data}")
+    
+    return daty
 
 def utworz_xml_root():
     """Tworzy główny element XML"""
@@ -53,22 +58,9 @@ def utworz_xml_root():
     root.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
     return root
 
-def znajdz_lub_utworz_dataset(root, nazwa_dewelopera, rok):
-    """Znajduje istniejący dataset lub tworzy nowy"""
-    
-    # Szukaj istniejącego datasetu
-    ns = {'ns2': 'urn:otwarte-dane:harvester:1.13'}
-    datasets = root.findall('.//ns2:dataset', ns)
-    
-    for dataset in datasets:
-        extident = dataset.find('ns2:extIdent', ns)
-        if extident is not None and extident.text == EXTIDENT_DATASET:
-            print(f"✅ Znaleziono istniejący dataset: {EXTIDENT_DATASET}")
-            resources = dataset.find('ns2:resources', ns)
-            return dataset, resources
-    
-    # Jeśli nie znaleziono, utwórz nowy
-    print(f"📄 Tworzę nowy dataset: {EXTIDENT_DATASET}")
+def utworz_dataset(root, nazwa_dewelopera, rok):
+    """Tworzy nowy dataset"""
+    print(f"📄 Tworzę dataset: {EXTIDENT_DATASET}")
     dataset = ET.SubElement(root, 'dataset')
     dataset.set('status', 'published')
     
@@ -111,27 +103,12 @@ def znajdz_lub_utworz_dataset(root, nazwa_dewelopera, rok):
     
     return dataset, resources
 
-def sprawdz_czy_resource_istnieje(resources, extident_szukany):
-    """Sprawdza czy resource o danym extIdent już istnieje"""
-    ns = {'ns2': 'urn:otwarte-dane:harvester:1.13'}
-    
-    for resource in resources.findall('ns2:resource', ns):
-        extident = resource.find('ns2:extIdent', ns)
-        if extident is not None and extident.text == extident_szukany:
-            return True
-    return False
-
 def dodaj_resource(resources, data_publikacji):
-    """Dodaje nowy resource - dane z konkretnego dnia"""
+    """Dodaje resource dla konkretnej daty"""
     
     extident_resource = f"kerim_dane_{data_publikacji.replace('-', '')}"[:36]
     
-    # Sprawdź czy resource na ten dzień już istnieje
-    if sprawdz_czy_resource_istnieje(resources, extident_resource):
-        print(f"⚠️ Resource dla daty {data_publikacji} już istnieje - pomijam")
-        return False
-    
-    print(f"➕ Dodaję nowy resource: {extident_resource}")
+    print(f"➕ Dodaję resource: {extident_resource}")
     
     resource = ET.SubElement(resources, 'resource')
     resource.set('status', 'published')
@@ -170,51 +147,46 @@ def dodaj_resource(resources, data_publikacji):
     ET.SubElement(resource, 'hasHighValueDataFromEuropeanCommissionList').text = 'false'
     ET.SubElement(resource, 'hasResearchData').text = 'false'
     ET.SubElement(resource, 'containsProtectedData').text = 'false'
-    
-    return True
 
-def policz_resources(resources):
-    """Liczy ile resources jest w XML"""
-    ns = {'ns2': 'urn:otwarte-dane:harvester:1.13'}
-    return len(resources.findall('ns2:resource', ns))
+def pretty_print_xml(element, level=0):
+    """Formatuje XML bez pustych linii"""
+    indent = "  "
+    i = "\n" + level * indent
+    if len(element):
+        if not element.text or not element.text.strip():
+            element.text = i + indent
+        if not element.tail or not element.tail.strip():
+            element.tail = i
+        for child in element:
+            pretty_print_xml(child, level + 1)
+        if not child.tail or not child.tail.strip():
+            child.tail = i
+    else:
+        if level and (not element.tail or not element.tail.strip()):
+            element.tail = i
 
-def generuj_xml_z_akumulacja(df, data_publikacji=None):
-    """Generuje XML z akumulacją resources (Opcja A)"""
-    
-    if data_publikacji is None:
-        data_publikacji = datetime.now().strftime('%Y-%m-%d')
+def generuj_xml_dla_wszystkich_csv(daty_csv):
+    """Generuje XML ze wszystkimi resources (po jednym dla każdego CSV)"""
     
     rok = datetime.now().year
     
-    print(f"🔨 Generuję XML z akumulacją dla daty: {data_publikacji}")
+    print(f"🔨 Generuję XML dla {len(daty_csv)} plików CSV")
     
-    # Wczytaj istniejący XML lub utwórz nowy
-    root = wczytaj_istniejacy_xml()
+    # Utwórz nowy XML od zera
+    root = utworz_xml_root()
     
-    if root is None:
-        root = utworz_xml_root()
+    # Utwórz dataset
+    dataset, resources = utworz_dataset(root, NAZWA_DEWELOPERA, rok)
     
-    # Znajdź lub utwórz dataset
-    dataset, resources = znajdz_lub_utworz_dataset(root, NAZWA_DEWELOPERA, rok)
+    # Dodaj resource dla każdego CSV
+    for data in daty_csv:
+        dodaj_resource(resources, data)
     
-    # Policz ile resources było przed
-    liczba_przed = policz_resources(resources)
-    print(f"📊 Resources przed: {liczba_przed}")
+    # Formatuj XML (bez pustych linii)
+    pretty_print_xml(root)
     
-    # Dodaj nowy resource (jeśli nie istnieje)
-    dodano = dodaj_resource(resources, data_publikacji)
-    
-    # Policz ile resources jest teraz
-    liczba_po = policz_resources(resources)
-    print(f"📊 Resources po: {liczba_po}")
-    
-    if dodano:
-        print(f"✅ Dodano nowy resource dla {data_publikacji}")
-    else:
-        print(f"ℹ️ Resource dla {data_publikacji} już istniał")
-    
-    # Formatuj XML
-    xml_str = minidom.parseString(ET.tostring(root, encoding='utf-8')).toprettyxml(indent="  ", encoding='utf-8')
+    # Konwertuj do stringa
+    xml_str = ET.tostring(root, encoding='utf-8', xml_declaration=True)
     
     return xml_str
 
@@ -241,16 +213,15 @@ def zapisz_pliki(xml_content):
     return XML_FILE, MD5_FILE
 
 def generuj_csv_dla_portalu(df, data_publikacji):
-    """Generuje plik CSV w formacie do przesłania na portal dane.gov.pl"""
+    """Generuje plik CSV dla dzisiejszej daty (jeśli nie istnieje)"""
     csv_path = f"Kerim-ceny-mieszkan-{data_publikacji}.csv"
     
-    # Sprawdź czy CSV już istnieje
     if os.path.exists(csv_path):
         print(f"ℹ️ CSV dla {data_publikacji} już istnieje: {csv_path}")
         return csv_path
     
     df.to_csv(csv_path, index=False, encoding='utf-8')
-    print(f"✅ Zapisano nowy CSV: {csv_path}")
+    print(f"✅ Utworzono nowy CSV: {csv_path}")
     return csv_path
 
 # ==================== GŁÓWNA FUNKCJA ====================
@@ -259,40 +230,48 @@ def main():
     """Główna funkcja programu"""
     
     print("=" * 60)
-    print("🏢 KERIM - Generator XML (Opcja A - Historia)")
+    print("🏢 KERIM - Generator XML v3 (Skanuje wszystkie CSV)")
     print("=" * 60)
     
     excel_file = "Kerim_Dane_ceny_mieszkan.xlsx"
     
     if not os.path.exists(excel_file):
         print(f"❌ Błąd: Nie znaleziono pliku {excel_file}")
-        print(f"   Upewnij się, że plik Excel jest w tym samym folderze co skrypt.")
         return
     
     try:
-        # Wczytaj dane
+        # Wczytaj dane z Excela
         df = wczytaj_excel(excel_file)
         
-        # Data publikacji (dzisiejsza data)
-        data_publikacji = datetime.now().strftime('%Y-%m-%d')
+        # Data dzisiejsza
+        data_dzisiaj = datetime.now().strftime('%Y-%m-%d')
         
-        # Generuj XML z akumulacją
-        xml_content = generuj_xml_z_akumulacja(df, data_publikacji)
+        # Wygeneruj CSV na dziś (jeśli nie istnieje)
+        csv_dzisiaj = generuj_csv_dla_portalu(df, data_dzisiaj)
+        
+        # Znajdź wszystkie pliki CSV w folderze
+        daty_csv = znajdz_wszystkie_csv()
+        
+        if not daty_csv:
+            print("⚠️ Nie znaleziono żadnych plików CSV!")
+            print("   Tworzę CSV dla dzisiejszej daty...")
+            daty_csv = [data_dzisiaj]
+        
+        # Generuj XML dla WSZYSTKICH CSV
+        xml_content = generuj_xml_dla_wszystkich_csv(daty_csv)
         
         # Zapisz pliki XML i MD5
         xml_path, md5_path = zapisz_pliki(xml_content)
         
-        # Generuj CSV dla portalu (tylko jeśli nie istnieje)
-        csv_path = generuj_csv_dla_portalu(df, data_publikacji)
-        
         print("\n" + "=" * 60)
-        print("✅ SUKCES! Pliki zaktualizowane:")
-        print(f"   📄 {xml_path} (akumulacja resources)")
+        print("✅ SUKCES! Pliki wygenerowane:")
+        print(f"   📄 {xml_path} ({len(daty_csv)} resources)")
         print(f"   🔐 {md5_path}")
-        print(f"   📊 {csv_path}")
+        print(f"   📊 {csv_dzisiaj}")
         print("=" * 60)
-        print("\n💡 Opcja A aktywna: Każdy dzień dodaje nowy resource")
-        print("   Historia cen jest zachowana w zbiorze danych!")
+        print(f"\n💡 XML zawiera {len(daty_csv)} resources:")
+        for data in daty_csv:
+            print(f"   • {data}")
         print("=" * 60)
         
     except Exception as e:

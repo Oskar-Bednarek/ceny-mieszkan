@@ -1,377 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ns0:datasets xmlns:ns0="urn:otwarte-dane:harvester:1.13">
-  
-  
-  
-  
-  <dataset status="published">
-    
-    
-    
-    
-    <extIdent>kerim_ceny_mieszkan_dataset</extIdent>
-    
-    
-    
-    
-    <title>
-      
-      
-      
-      
-      <polish>Ceny ofertowe mieszkań dewelopera Kerim w 2025 r.</polish>
-      
-      
-      
-      
-      <english>Offer prices of apartments of developer Kerim in 2025.</english>
-      
-      
-    
-    
-    </title>
-    
-    
-    
-    
-    <description>
-      
-      
-      
-      
-      <polish>Zbiór danych zawiera informacje o cenach ofertowych mieszkań dewelopera Kerim udostępniane zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
-      
-      
-      
-      
-      <english>The dataset contains information on offer prices of apartments of the developer Kerim made available in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
-      
-      
-    
-    
-    </description>
-    
-    
-    
-    
-    <updateFrequency>daily</updateFrequency>
-    
-    
-    
-    
-    <hasDynamicData>false</hasDynamicData>
-    
-    
-    
-    
-    <hasHighValueData>true</hasHighValueData>
-    
-    
-    
-    
-    <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
-    
-    
-    
-    
-    <hasResearchData>false</hasResearchData>
-    
-    
-    
-    
-    <categories>
-      
-      
-      
-      
-      <category>ECON</category>
-      
-      
-    
-    
-    </categories>
-    
-    
-    
-    
-    <resources>
-      
-      
-      
-      
-      <resource status="published">
-        
-        
-        
-        
-        <extIdent>kerim_dane_20251026</extIdent>
-        
-        
-        
-        
-        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-26.csv</url>
-        
-        
-        
-        
-        <title>
-          
-          
-          
-          
-          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-26</polish>
-          
-          
-          
-          
-          <english>Offer prices for developer's apartments Kerim 2025-10-26</english>
-          
-          
-        
-        
-        </title>
-        
-        
-        
-        
-        <description>
-          
-          
-          
-          
-          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-26 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
-          
-          
-          
-          
-          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-26 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
-          
-          
-        
-        
-        </description>
-        
-        
-        
-        
-        <availability>local</availability>
-        
-        
-        
-        
-        <dataDate>2025-10-26</dataDate>
-        
-        
-        
-        
-        <specialSigns>
-          
-          
-          
-          
-          <specialSign>X</specialSign>
-          
-          
-        
-        
-        </specialSigns>
-        
-        
-        
-        
-        <hasDynamicData>false</hasDynamicData>
-        
-        
-        
-        
-        <hasHighValueData>true</hasHighValueData>
-        
-        
-        
-        
-        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
-        
-        
-        
-        
-        <hasResearchData>false</hasResearchData>
-        
-        
-        
-        
-        <containsProtectedData>false</containsProtectedData>
-        
-        
-      
-      
-      </resource>
-      
-      
-    
-    
-    </resources>
-    
-    
-    
-    
-    <tags>
-      
-      
-      
-      
-      <tag lang="pl">Deweloper</tag>
-      
-      
-    
-    
-    </tags>
-    
-    
-  
-  
-  </dataset>
-  
-  
-
-  
-  <dataset status="published">
-    
-    
-    <extIdent>kerim_ceny_mieszkan_2025_dataset</extIdent>
-    
-    
-    <title>
-      
-      
-      <polish>Ceny ofertowe mieszkań dewelopera Kerim w 2025 r.</polish>
-      
-      
-      <english>Offer prices of apartments of developer Kerim in 2025.</english>
-      
-    
-    </title>
-    
-    
-    <description>
-      
-      
-      <polish>Zbiór danych zawiera informacje o cenach ofertowych mieszkań dewelopera Kerim udostępniane zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
-      
-      
-      <english>The dataset contains information on offer prices of apartments of the developer Kerim made available in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
-      
-    
-    </description>
-    
-    
-    <updateFrequency>daily</updateFrequency>
-    
-    
-    <hasDynamicData>false</hasDynamicData>
-    
-    
-    <hasHighValueData>true</hasHighValueData>
-    
-    
-    <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
-    
-    
-    <hasResearchData>false</hasResearchData>
-    
-    
-    <categories>
-      
-      
-      <category>ECON</category>
-      
-    
-    </categories>
-    
-    
-    <resources>
-      
-      
-      <resource status="published">
-        
-        
-        <extIdent>kerim_dane_20251026</extIdent>
-        
-        
-        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-26.csv</url>
-        
-        
-        <title>
-          
-          
-          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-26</polish>
-          
-          
-          <english>Offer prices for developer's apartments Kerim 2025-10-26</english>
-          
-        
-        </title>
-        
-        
-        <description>
-          
-          
-          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-26 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
-          
-          
-          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-26 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
-          
-        
-        </description>
-        
-        
-        <availability>local</availability>
-        
-        
-        <dataDate>2025-10-26</dataDate>
-        
-        
-        <specialSigns>
-          
-          
-          <specialSign>X</specialSign>
-          
-        
-        </specialSigns>
-        
-        
-        <hasDynamicData>false</hasDynamicData>
-        
-        
-        <hasHighValueData>true</hasHighValueData>
-        
-        
-        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
-        
-        
-        <hasResearchData>false</hasResearchData>
-        
-        
-        <containsProtectedData>false</containsProtectedData>
-        
-      
-      </resource>
-      
-    
-    </resources>
-    
-    
-    <tags>
-      
-      
-      <tag lang="pl">Deweloper</tag>
-      
-    
-    </tags>
-    
-  
-  </dataset>
-  
-
+<?xml version='1.0' encoding='utf-8'?>
+<ns2:datasets xmlns:ns2="urn:otwarte-dane:harvester:1.13" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <dataset status="published">
     <extIdent>kerim_ceny_mieszkan_2025_dataset</extIdent>
     <title>
@@ -392,6 +20,270 @@
     </categories>
     <resources>
       <resource status="published">
+        <extIdent>kerim_dane_20251014</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-14.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-14</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-14</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-14 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-14 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-14</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251015</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-15.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-15</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-15</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-15 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-15 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-15</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251016</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-16.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-16</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-16</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-16 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-16 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-16</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251017</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-17.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-17</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-17</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-17 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-17 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-17</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251018</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-18.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-18</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-18</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-18 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-18 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-18</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251019</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-19.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-19</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-19</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-19 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-19 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-19</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251020</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-20.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-20</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-20</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-20 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-20 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-20</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251021</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-21.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-21</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-21</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-21 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-21 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-21</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251022</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-22.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-22</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-22</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-22 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-22 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-22</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251023</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-23.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-23</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-23</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-23 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-23 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-23</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251024</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-24.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-24</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-24</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-24 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-24 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-24</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251025</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-25.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-25</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-25</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-25 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-25 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-25</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
         <extIdent>kerim_dane_20251026</extIdent>
         <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-26.csv</url>
         <title>
@@ -413,9 +305,31 @@
         <hasResearchData>false</hasResearchData>
         <containsProtectedData>false</containsProtectedData>
       </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20251027</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2025-10-27.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2025-10-27</polish>
+          <english>Offer prices for developer's apartments Kerim 2025-10-27</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2025-10-27 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2025-10-27 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2025-10-27</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
     </resources>
     <tags>
       <tag lang="pl">Deweloper</tag>
     </tags>
   </dataset>
-</ns0:datasets>
+</ns2:datasets>
