@@ -2,7 +2,7 @@ name: Update XML Daily
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Codziennie o 8:00 rano (czas polski)
+    - cron: '0 22 * * *'  # Codziennie o 22:00 (czas polski)
   
   workflow_dispatch:  # Możliwość uruchomienia ręcznego
 
