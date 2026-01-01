@@ -33,6 +33,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add kerim-ceny-mieszkan.xml
           git add kerim-ceny-mieszkan.md5
-          git add Kerim-ceny-mieszkan-*.csv
+          git add csv/**/*.csv
+          if [ -d history ]; then git add history; fi
           git diff --quiet && git diff --staged --quiet || git commit -m "Automatyczna aktualizacja danych - $(date +'%Y-%m-%d')"
           git push
