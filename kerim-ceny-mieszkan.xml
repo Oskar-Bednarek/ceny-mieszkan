@@ -3,8 +3,8 @@
   <dataset status="published">
     <extIdent>kerim_ceny_mieszkan_2025_dataset</extIdent>
     <title>
-      <polish>Ceny ofertowe mieszkań dewelopera Kerim w 2025 r.</polish>
-      <english>Offer prices of apartments of developer Kerim in 2025.</english>
+      <polish>Ceny ofertowe mieszkań dewelopera Kerim w 2026 r.</polish>
+      <english>Offer prices of apartments of developer Kerim in 2026.</english>
     </title>
     <description>
       <polish>Zbiór danych zawiera informacje o cenach ofertowych mieszkań dewelopera Kerim udostępniane zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
@@ -1748,6 +1748,28 @@
         </description>
         <availability>local</availability>
         <dataDate>2025-12-31</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20260101</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/Kerim-ceny-mieszkan-2026-01-01.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2026-01-01</polish>
+          <english>Offer prices for developer's apartments Kerim 2026-01-01</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim udostępnione 2026-01-01 zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim made available 2026-01-01 in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2026-01-01</dataDate>
         <specialSigns>
           <specialSign>X</specialSign>
         </specialSigns>
