@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Konwerter Excel -> XML dla portalu dane.gov.pl (Opcja A - Historia)
+Konwerter Excel -> XML dla portalu dane.gov.pl
 Kerim Sp. z o.o.
-Wersja 3.2 - Skanuje CSV z bieżącego roku, tworzy resource dla każdego
+Wersja 4.0 - Jeden dataset obejmujący wszystkie historyczne i przyszłe CSV
 """
 
 import glob
@@ -17,15 +17,18 @@ import pandas as pd
 
 # ==================== KONFIGURACJA ====================
 NAZWA_DEWELOPERA = "Kerim"
-EXTIDENT_TEMPLATE = "kerim_ceny_mieszkan_{year}_dataset"
+# Zachowujemy dotychczasowy identyfikator, aby harvester aktualizował istniejący
+# zbiór zamiast tworzyć nowy. Identyfikator pozostaje stały także w kolejnych latach.
+DATASET_EXTIDENT = "kerim_ceny_mieszkan_2026_dataset"
 URL_BASE = "https://oskar-bednarek.github.io/ceny-mieszkan/"
+
+EXCEL_FILE = "Kerim_Dane_ceny_mieszkan_nowa_struktura.xlsx"
 
 CSV_ROOT_DIR = "csv"
 CSV_FILENAME_TEMPLATE = "Kerim-ceny-mieszkan-{date}.csv"
 
 XML_FILE = "kerim-ceny-mieszkan.xml"
 MD5_FILE = "kerim-ceny-mieszkan.md5"
-HISTORY_DIR = "history"
 
 
 # ==================== POMOCNICZE ====================
@@ -92,16 +95,17 @@ def utworz_xml_root() -> ET.Element:
     return root
 
 
-def utworz_dataset(root: ET.Element, nazwa_dewelopera: str, rok_datasetu: int) -> tuple[ET.Element, ET.Element]:
-    """Tworzy dataset bez roku w tytule, ale z unikalnym extIdent na rok."""
-    extident_dataset = EXTIDENT_TEMPLATE.format(year=rok_datasetu)
-    print(f"-> Tworzę dataset: {extident_dataset}")
+def utworz_dataset(
+    root: ET.Element, nazwa_dewelopera: str
+) -> tuple[ET.Element, ET.Element]:
+    """Tworzy jeden stały dataset zawierający zasoby ze wszystkich lat."""
+    print(f"-> Tworzę dataset: {DATASET_EXTIDENT}")
 
     dataset = ET.SubElement(root, "dataset")
     dataset.set("status", "published")
 
     extident = ET.SubElement(dataset, "extIdent")
-    extident.text = extident_dataset
+    extident.text = DATASET_EXTIDENT
 
     title = ET.SubElement(dataset, "title")
     ET.SubElement(title, "polish").text = f"Ceny ofertowe mieszkań dewelopera {nazwa_dewelopera}"
@@ -109,13 +113,15 @@ def utworz_dataset(root: ET.Element, nazwa_dewelopera: str, rok_datasetu: int) -
 
     description = ET.SubElement(dataset, "description")
     ET.SubElement(description, "polish").text = (
-        f"Zbiór danych zawiera informacje o cenach ofertowych mieszkań dewelopera {nazwa_dewelopera} "
+        f"Zbiór danych zawiera historyczne i bieżące informacje o cenach ofertowych mieszkań "
+        f"dewelopera {nazwa_dewelopera} "
         f"udostępniane zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy "
         f"lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym "
         f"(Dz. U. z 2024 r. poz. 695)."
     )
     ET.SubElement(description, "english").text = (
-        f"The dataset contains information on offer prices of apartments of the developer {nazwa_dewelopera} "
+        f"The dataset contains historical and current information on offer prices of apartments "
+        f"of the developer {nazwa_dewelopera} "
         f"made available in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw "
         f"nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym "
         f"(Dz. U. z 2024 r. poz. 695)."
@@ -200,13 +206,13 @@ def pretty_print_xml(element: ET.Element, level: int = 0) -> None:
             element.tail = i
 
 
-def generuj_xml_dla_wszystkich_csv(daty_csv: list[str], rok_datasetu: int) -> bytes:
-    """Generuje XML ze wszystkimi resources (po jednym dla każdego CSV)."""
-    print(f"-> Generuję XML dla {len(daty_csv)} plików CSV")
+def generuj_xml_dla_wszystkich_csv(daty_csv: list[str]) -> bytes:
+    """Generuje jeden XML i jeden dataset ze wszystkimi zasobami CSV."""
+    daty_csv = sorted(set(daty_csv))
+    print(f"-> Generuję jeden dataset dla {len(daty_csv)} plików CSV")
 
     root = utworz_xml_root()
-    dataset, resources = utworz_dataset(root, NAZWA_DEWELOPERA, rok_datasetu)
-
+    _, resources = utworz_dataset(root, NAZWA_DEWELOPERA)
     for data in daty_csv:
         dodaj_resource(resources, data)
 
@@ -250,62 +256,39 @@ def generuj_csv_dla_portalu(df: pd.DataFrame, data_publikacji: str) -> str:
     return csv_destination
 
 
-def zapisz_historyczny_xml(poprz_rok: int, wszystkie_daty: list[str]) -> tuple[str, str] | None:
-    """Tworzy i zapisuje kopię XML/MD5 dla poprzedniego roku (jeśli są dane)."""
-    daty_poprz = [d for d in wszystkie_daty if d.startswith(str(poprz_rok))]
-    if not daty_poprz:
-        return None
-
-    os.makedirs(HISTORY_DIR, exist_ok=True)
-    xml_content = generuj_xml_dla_wszystkich_csv(daty_poprz, poprz_rok)
-
-    hist_xml_path = os.path.join(HISTORY_DIR, f"kerim-ceny-mieszkan-{poprz_rok}.xml")
-    hist_md5_path = os.path.join(HISTORY_DIR, f"kerim-ceny-mieszkan-{poprz_rok}.md5")
-
-    return zapisz_pliki(xml_content, hist_xml_path, hist_md5_path)
-
-
 # ==================== GŁÓWNA FUNKCJA ====================
 def main() -> None:
     """Główna funkcja programu."""
     print("=" * 60)
-    print("KERIM - Generator XML v3.2 (Skanuje CSV z bieżącego roku)")
+    print("KERIM - Generator XML v4.0 (Jeden dataset, pełna historia)")
     print("=" * 60)
 
-    excel_file = "Kerim_Dane_ceny_mieszkan.xlsx"
-
-    if not os.path.exists(excel_file):
-        print(f"!! Błąd: Nie znaleziono pliku {excel_file}")
+    if not os.path.exists(EXCEL_FILE):
+        print(f"!! Błąd: Nie znaleziono pliku {EXCEL_FILE}")
         return
 
     try:
-        df = wczytaj_excel(excel_file)
+        df = wczytaj_excel(EXCEL_FILE)
         data_dzisiaj = datetime.now().strftime("%Y-%m-%d")
-        rok_biezacy = datetime.now().year
         csv_dzisiaj = generuj_csv_dla_portalu(df, data_dzisiaj)
 
         wszystkie_daty = znajdz_wszystkie_csv()
-        daty_csv = [d for d in wszystkie_daty if d.startswith(str(rok_biezacy))]
-        if not daty_csv:
+        if not wszystkie_daty:
             print("!! Nie znaleziono żadnych plików CSV!")
             print("   Tworzę CSV dla dzisiejszej daty...")
-            daty_csv = [data_dzisiaj]
+            wszystkie_daty = [data_dzisiaj]
 
-        xml_content = generuj_xml_dla_wszystkich_csv(daty_csv, rok_biezacy)
+        xml_content = generuj_xml_dla_wszystkich_csv(wszystkie_daty)
         xml_path, md5_path = zapisz_pliki(xml_content)
-
-        hist_paths = zapisz_historyczny_xml(rok_biezacy - 1, wszystkie_daty)
 
         print("\n" + "=" * 60)
         print("SUKCES! Pliki wygenerowane:")
-        print(f"   - {xml_path} ({len(daty_csv)} resources)")
+        print(f"   - {xml_path} ({len(wszystkie_daty)} resources)")
         print(f"   - {md5_path}")
         print(f"   - {csv_dzisiaj}")
-        if hist_paths:
-            print(f"   - Archiwum poprzedniego roku: {hist_paths[0]} / {hist_paths[1]}")
         print("=" * 60)
-        print(f"\nXML zawiera {len(daty_csv)} resources:")
-        for data in daty_csv:
+        print(f"\nXML zawiera {len(wszystkie_daty)} resources:")
+        for data in wszystkie_daty:
             print(f"   * {data}")
         print("=" * 60)
 
