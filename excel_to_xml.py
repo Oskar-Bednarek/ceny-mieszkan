@@ -15,14 +15,19 @@ from datetime import datetime
 
 import pandas as pd
 
+from data_schema import validate_schema
+from data_sources import load_source
+
 # ==================== KONFIGURACJA ====================
 NAZWA_DEWELOPERA = "Kerim"
 # Zachowujemy dotychczasowy identyfikator, aby harvester aktualizował istniejący
 # zbiór zamiast tworzyć nowy. Identyfikator pozostaje stały także w kolejnych latach.
 DATASET_EXTIDENT = "kerim_ceny_mieszkan_2026_dataset"
-URL_BASE = "https://oskar-bednarek.github.io/ceny-mieszkan/"
+URL_BASE = os.getenv("PUBLIC_BASE_URL", "https://oskar-bednarek.github.io/ceny-mieszkan/").rstrip("/") + "/"
 
 EXCEL_FILE = "Kerim_Dane_ceny_mieszkan_nowa_struktura.xlsx"
+SOURCE_TYPE = os.getenv("DATA_SOURCE_TYPE", "excel")
+SOURCE_LOCATION = os.getenv("DATA_SOURCE_LOCATION", EXCEL_FILE)
 
 CSV_ROOT_DIR = "csv"
 CSV_FILENAME_TEMPLATE = "Kerim-ceny-mieszkan-{date}.csv"
@@ -59,6 +64,15 @@ def wczytaj_excel(sciezka_excel: str) -> pd.DataFrame:
     print(f"-> Wczytuję dane z: {sciezka_excel}")
     df = pd.read_excel(sciezka_excel)
     print(f"-> Wczytano {len(df)} lokali")
+    return df
+
+
+def wczytaj_dane(source_type: str = SOURCE_TYPE, location: str = SOURCE_LOCATION) -> pd.DataFrame:
+    """Wczytuje i waliduje dane z Excela albo JSON-u (lokalnego lub HTTPS)."""
+    print(f"-> Wczytuję źródło {source_type}: {location}")
+    df = load_source(source_type, location)
+    validate_schema(df)
+    print(f"-> Wczytano {len(df)} lokali; schemat 48 kolumn jest poprawny")
     return df
 
 
@@ -263,12 +277,12 @@ def main() -> None:
     print("KERIM - Generator XML v4.0 (Jeden dataset, pełna historia)")
     print("=" * 60)
 
-    if not os.path.exists(EXCEL_FILE):
-        print(f"!! Błąd: Nie znaleziono pliku {EXCEL_FILE}")
+    if SOURCE_TYPE == "excel" and not os.path.exists(SOURCE_LOCATION):
+        print(f"!! Błąd: Nie znaleziono pliku {SOURCE_LOCATION}")
         return
 
     try:
-        df = wczytaj_excel(EXCEL_FILE)
+        df = wczytaj_dane()
         data_dzisiaj = datetime.now().strftime("%Y-%m-%d")
         csv_dzisiaj = generuj_csv_dla_portalu(df, data_dzisiaj)
 
@@ -297,6 +311,7 @@ def main() -> None:
         import traceback
 
         traceback.print_exc()
+        raise SystemExit(1) from e
 
 
 if __name__ == "__main__":
