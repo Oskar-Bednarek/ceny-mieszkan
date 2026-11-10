@@ -33,3 +33,15 @@ $env:DATA_SOURCE_TYPE = "json"
 $env:DATA_SOURCE_LOCATION = "https://dane.example.pl/ceny.json"
 python excel_to_xml.py
 ```
+
+## Brak danych i awarie źródła
+
+- Poprawna odpowiedź JSON z pustą tablicą (`{"data": []}`) oznacza brak
+  dostępnych lokali. Generator publikuje wtedy CSV zawierający same nagłówki.
+- Brak pliku, błąd HTTP, uszkodzony JSON lub nieprawidłowy schemat zatrzymuje
+  publikację. Nie powstaje zasób z fałszywą datą, a ostatni poprawny zasób
+  pozostaje dostępny.
+- Generator nigdy nie nadpisuje istniejącego dziennego CSV.
+
+Opis przepływu i decyzji awaryjnych znajduje się w
+[`docs/ARCHITEKTURA.md`](docs/ARCHITEKTURA.md).

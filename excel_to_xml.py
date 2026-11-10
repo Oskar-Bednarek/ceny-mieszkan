@@ -129,16 +129,21 @@ def utworz_dataset(
     ET.SubElement(description, "polish").text = (
         f"Zbiór danych zawiera historyczne i bieżące informacje o cenach ofertowych mieszkań "
         f"dewelopera {nazwa_dewelopera} "
-        f"udostępniane zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy "
+        f"udostępniane zgodnie z art. 19b ust. 1 ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy "
         f"lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym "
-        f"(Dz. U. z 2024 r. poz. 695)."
+        f"(Dz. U. z 2026 r. poz. 880 i 1077). Dane mają strukturę określoną w rozporządzeniu "
+        f"Ministra Cyfryzacji z dnia 10 listopada 2026 r. w sprawie struktury danych zawartych "
+        f"w informacjach dotyczących sprzedaży lokali mieszkalnych i domów jednorodzinnych "
+        f"(Dz. U. z 2026 r. poz. 1489)."
     )
     ET.SubElement(description, "english").text = (
         f"The dataset contains historical and current information on offer prices of apartments "
         f"of the developer {nazwa_dewelopera} "
-        f"made available in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. o ochronie praw "
-        f"nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym "
-        f"(Dz. U. z 2024 r. poz. 695)."
+        f"made available pursuant to Article 19b(1) of the Act of 20 May 2021 on the protection "
+        f"of the rights of buyers of residential premises or single-family houses and the Developer "
+        f"Guarantee Fund (Journal of Laws of 2026, items 880 and 1077). The data follows the structure "
+        f"specified in the Regulation of the Minister of Digital Affairs of 10 November 2026 "
+        f"(Journal of Laws of 2026, item 1489)."
     )
 
     ET.SubElement(dataset, "updateFrequency").text = "daily"
@@ -278,8 +283,7 @@ def main() -> None:
     print("=" * 60)
 
     if SOURCE_TYPE == "excel" and not os.path.exists(SOURCE_LOCATION):
-        print(f"!! Błąd: Nie znaleziono pliku {SOURCE_LOCATION}")
-        return
+        raise SystemExit(f"!! Błąd: Nie znaleziono pliku {SOURCE_LOCATION}")
 
     try:
         df = wczytaj_dane()

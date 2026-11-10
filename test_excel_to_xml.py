@@ -47,6 +47,16 @@ class GeneratorXmlTest(unittest.TestCase):
         self.assertEqual(len(frame), 1)
         self.assertEqual(list(frame.columns), EXPECTED_COLUMNS)
 
+    def test_pusty_json_daje_csv_z_pelnym_schematem(self) -> None:
+        with tempfile.TemporaryDirectory(dir=".") as directory:
+            path = Path(directory) / "data.json"
+            path.write_text('{"data": []}', encoding="utf-8")
+            frame = load_json(str(path))
+
+        validate_schema(frame)
+        self.assertTrue(frame.empty)
+        self.assertEqual(list(frame.columns), EXPECTED_COLUMNS)
+
 
 if __name__ == "__main__":
     unittest.main()

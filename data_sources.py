@@ -8,6 +8,8 @@ from urllib.request import urlopen
 
 import pandas as pd
 
+from data_schema import EXPECTED_COLUMNS
+
 
 def load_excel(path: str) -> pd.DataFrame:
     """Wczytuje arkusz Excel."""
@@ -30,6 +32,10 @@ def load_json(location: str) -> pd.DataFrame:
     records = payload.get("data") if isinstance(payload, dict) else payload
     if not isinstance(records, list):
         raise ValueError("JSON musi być tablicą rekordów lub obiektem z tablicą w polu 'data'.")
+    if not records:
+        # Pusta, ale poprawnie odczytana lista oznacza brak dostępnych lokali.
+        # Zachowujemy pełny schemat, aby powstał CSV zawierający same nagłówki.
+        return pd.DataFrame(columns=EXPECTED_COLUMNS)
     return pd.DataFrame.from_records(records)
 
 
