@@ -12,6 +12,7 @@ import os
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
@@ -34,6 +35,8 @@ CSV_FILENAME_TEMPLATE = "Kerim-ceny-mieszkan-{date}.csv"
 
 XML_FILE = "kerim-ceny-mieszkan.xml"
 MD5_FILE = "kerim-ceny-mieszkan.md5"
+WARSAW_TIMEZONE = ZoneInfo("Europe/Warsaw")
+NEW_LEGAL_BASIS_FROM = "2026-11-11"
 
 
 # ==================== POMOCNICZE ====================
@@ -131,7 +134,8 @@ def utworz_dataset(
         f"dewelopera {nazwa_dewelopera} "
         f"udostępniane zgodnie z art. 19b ust. 1 ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy "
         f"lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym "
-        f"(Dz. U. z 2026 r. poz. 880 i 1077). Dane mają strukturę określoną w rozporządzeniu "
+        f"(Dz. U. z 2026 r. poz. 880 i 1077). Zasoby przekazywane od 11 listopada 2026 r. "
+        f"mają strukturę określoną w rozporządzeniu "
         f"Ministra Cyfryzacji z dnia 10 listopada 2026 r. w sprawie struktury danych zawartych "
         f"w informacjach dotyczących sprzedaży lokali mieszkalnych i domów jednorodzinnych "
         f"(Dz. U. z 2026 r. poz. 1489)."
@@ -141,7 +145,8 @@ def utworz_dataset(
         f"of the developer {nazwa_dewelopera} "
         f"made available pursuant to Article 19b(1) of the Act of 20 May 2021 on the protection "
         f"of the rights of buyers of residential premises or single-family houses and the Developer "
-        f"Guarantee Fund (Journal of Laws of 2026, items 880 and 1077). The data follows the structure "
+        f"Guarantee Fund (Journal of Laws of 2026, items 880 and 1077). Resources provided from "
+        f"11 November 2026 follow the structure "
         f"specified in the Regulation of the Minister of Digital Affairs of 10 November 2026 "
         f"(Journal of Laws of 2026, item 1489)."
     )
@@ -181,18 +186,37 @@ def dodaj_resource(resources: ET.Element, data_publikacji: str) -> None:
     ET.SubElement(title, "english").text = f"Offer prices for developer's apartments {NAZWA_DEWELOPERA} {data_publikacji}"
 
     description = ET.SubElement(resource, "description")
-    ET.SubElement(description, "polish").text = (
-        f"Dane dotyczące cen ofertowych mieszkań dewelopera {NAZWA_DEWELOPERA} "
-        f"udostępnione {data_publikacji} zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. "
-        f"o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim "
-        f"Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695)."
-    )
-    ET.SubElement(description, "english").text = (
-        f"Data on offer prices of apartments of the developer {NAZWA_DEWELOPERA} "
-        f"made available {data_publikacji} in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. "
-        f"o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim "
-        f"Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695)."
-    )
+    if data_publikacji >= NEW_LEGAL_BASIS_FROM:
+        ET.SubElement(description, "polish").text = (
+            f"Dane dotyczące cen ofertowych mieszkań dewelopera {NAZWA_DEWELOPERA} według stanu "
+            f"na dzień {data_publikacji}, przekazane zgodnie z art. 19b ust. 1 ustawy z dnia "
+            f"20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego "
+            f"oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2026 r. poz. 880 i 1077). "
+            f"Struktura danych jest zgodna z rozporządzeniem Ministra Cyfryzacji z dnia "
+            f"10 listopada 2026 r. w sprawie struktury danych zawartych w informacjach dotyczących "
+            f"sprzedaży lokali mieszkalnych i domów jednorodzinnych (Dz. U. z 2026 r. poz. 1489)."
+        )
+        ET.SubElement(description, "english").text = (
+            f"Data on offer prices of apartments of the developer {NAZWA_DEWELOPERA}, current as of "
+            f"{data_publikacji}, provided pursuant to Article 19b(1) of the Act of 20 May 2021 on the "
+            f"protection of the rights of buyers of residential premises or single-family houses and "
+            f"the Developer Guarantee Fund (Journal of Laws of 2026, items 880 and 1077). The data "
+            f"follows the structure specified in the Regulation of the Minister of Digital Affairs "
+            f"of 10 November 2026 (Journal of Laws of 2026, item 1489)."
+        )
+    else:
+        ET.SubElement(description, "polish").text = (
+            f"Dane dotyczące cen ofertowych mieszkań dewelopera {NAZWA_DEWELOPERA} "
+            f"udostępnione {data_publikacji} zgodnie z art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. "
+            f"o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim "
+            f"Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695)."
+        )
+        ET.SubElement(description, "english").text = (
+            f"Data on offer prices of apartments of the developer {NAZWA_DEWELOPERA} "
+            f"made available {data_publikacji} in accordance with art. 19b. ust. 1 Ustawy z dnia 20 maja 2021 r. "
+            f"o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim "
+            f"Funduszu Gwarancyjnym (Dz. U. z 2024 r. poz. 695)."
+        )
 
     ET.SubElement(resource, "availability").text = "local"
     ET.SubElement(resource, "dataDate").text = data_publikacji
@@ -287,7 +311,9 @@ def main() -> None:
 
     try:
         df = wczytaj_dane()
-        data_dzisiaj = datetime.now().strftime("%Y-%m-%d")
+        # Runner GitHuba pracuje domyślnie w UTC. Data zasobu ma oznaczać
+        # bieżący dzień w Polsce, również przy uruchomieniu blisko północy.
+        data_dzisiaj = datetime.now(WARSAW_TIMEZONE).strftime("%Y-%m-%d")
         csv_dzisiaj = generuj_csv_dla_portalu(df, data_dzisiaj)
 
         wszystkie_daty = znajdz_wszystkie_csv()

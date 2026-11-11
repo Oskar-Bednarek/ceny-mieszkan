@@ -9,7 +9,10 @@ concurrency:
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # Codziennie o 02:00 (czas polski)
+    # Cron GitHuba działa w UTC. Minuta 17 ogranicza ryzyko opóźnień
+    # występujących najczęściej na początku pełnej godziny.
+    # Uruchomienie: 01:17 czasu polskiego zimą, 02:17 latem.
+    - cron: '17 0 * * *'
   
   workflow_dispatch:  # Możliwość uruchomienia ręcznego
 
@@ -17,6 +20,8 @@ jobs:
   generate-xml:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      TZ: Europe/Warsaw
     
     steps:
       - name: Checkout repository

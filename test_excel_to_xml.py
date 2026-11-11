@@ -36,6 +36,20 @@ class GeneratorXmlTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "brakujące"):
             validate_schema(pd.DataFrame(columns=EXPECTED_COLUMNS[:-1]))
 
+    def test_nowa_podstawa_prawna_dotyczy_zasobow_od_11_listopada(self) -> None:
+        xml_content = generuj_xml_dla_wszystkich_csv(["2026-11-10", "2026-11-11"])
+        root = ET.fromstring(xml_content)
+        resources = root.findall("./dataset/resources/resource")
+        descriptions = {
+            resource.findtext("dataDate"): resource.findtext("./description/polish")
+            for resource in resources
+        }
+
+        self.assertIn("Dz. U. z 2024 r. poz. 695", descriptions["2026-11-10"])
+        self.assertNotIn("poz. 1489", descriptions["2026-11-10"])
+        self.assertIn("Dz. U. z 2026 r. poz. 880 i 1077", descriptions["2026-11-11"])
+        self.assertIn("poz. 1489", descriptions["2026-11-11"])
+
     def test_json_jest_zamieniany_na_ten_sam_model_danych(self) -> None:
         row = {column: f"wartość-{index}" for index, column in enumerate(EXPECTED_COLUMNS)}
         with tempfile.TemporaryDirectory(dir=".") as directory:
