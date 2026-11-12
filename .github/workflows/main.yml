@@ -1,4 +1,4 @@
-name: Update XML Daily
+name: Publikacja danych dla dane.gov.pl
 
 permissions:
   contents: write
@@ -41,10 +41,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m unittest discover -v
       
       - name: Generate XML and MD5
-        run: |
-          python excel_to_xml.py
+        run: python excel_to_xml.py
       
       - name: Commit and push changes
         run: |

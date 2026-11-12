@@ -38,15 +38,21 @@ NESTED_SECTIONS = {
 }
 
 
-def _as_items(value: object) -> list[dict]:
+def _as_items(section_name: str, value: object) -> list[dict]:
     """Normalizuje opcjonalną sekcję aplikacji do listy obiektów."""
     if value in (None, "", "X"):
         return []
     if isinstance(value, dict):
         return [value]
     if isinstance(value, list) and all(isinstance(item, dict) for item in value):
+        if len(value) > 1:
+            raise ValueError(
+                f"Sekcja {section_name!r} może zawierać najwyżej jeden element."
+            )
         return value
-    raise ValueError("Sekcja zagnieżdżona JSON musi być obiektem, tablicą obiektów albo pusta.")
+    raise ValueError(
+        f"Sekcja {section_name!r} musi być obiektem, tablicą obiektów albo pusta."
+    )
 
 
 def _normalize_app_record(record: dict) -> list[dict]:
@@ -60,7 +66,7 @@ def _normalize_app_record(record: dict) -> list[dict]:
         return [base]
 
     sections = {
-        name: _as_items(record.get(name))
+        name: _as_items(name, record.get(name))
         for name in NESTED_SECTIONS
     }
     row_count = max((len(items) for items in sections.values()), default=0) or 1
@@ -69,8 +75,20 @@ def _normalize_app_record(record: dict) -> list[dict]:
         row = dict(base)
         for section_name, columns in NESTED_SECTIONS.items():
             items = sections[section_name]
-            item = items[index] if index < len(items) else {}
+            has_item = index < len(items)
+            item = items[index] if has_item else {}
             normalized_item = {COLUMN_ALIASES.get(key, key): value for key, value in item.items()}
+            if has_item and set(normalized_item) != set(columns):
+                missing = sorted(set(columns) - set(normalized_item))
+                extra = sorted(set(normalized_item) - set(columns))
+                details = []
+                if missing:
+                    details.append(f"brakujące pola: {missing}")
+                if extra:
+                    details.append(f"nieznane pola: {extra}")
+                raise ValueError(
+                    f"Nieprawidłowa sekcja {section_name!r} ({'; '.join(details)})."
+                )
             for column in columns:
                 row[column] = normalized_item.get(column, "X")
         rows.append(row)

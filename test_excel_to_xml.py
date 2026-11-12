@@ -119,6 +119,43 @@ class GeneratorXmlTest(unittest.TestCase):
         self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[35]], "pomieszczenie-0")
         self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[40]], "X")
 
+    def test_nieznane_pola_sekcji_sa_odrzucane(self) -> None:
+        row = {column: "wartość" for column in EXPECTED_COLUMNS[:35]}
+        row["Pomieszczenia przynależne"] = []
+        row["Prawa niezbędne do korzystania"] = [{"nazwa": "Udział w drodze"}]
+        row["Inne świadczenia pieniężne"] = []
+
+        with tempfile.TemporaryDirectory(dir=".") as directory:
+            path = Path(directory) / "invalid-section.json"
+            path.write_text(json.dumps([{"rekord": row}], ensure_ascii=False), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "Nieprawidłowa sekcja"):
+                load_json(str(path))
+
+    def test_wiecej_niz_jeden_element_sekcji_jest_odrzucany(self) -> None:
+        row = {column: "wartość" for column in EXPECTED_COLUMNS[:35]}
+        item = {column: "wartość" for column in EXPECTED_COLUMNS[35:40]}
+        row["Pomieszczenia przynależne"] = [item, item]
+        row["Prawa niezbędne do korzystania"] = []
+        row["Inne świadczenia pieniężne"] = []
+
+        with tempfile.TemporaryDirectory(dir=".") as directory:
+            path = Path(directory) / "too-many-items.json"
+            path.write_text(json.dumps([{"rekord": row}], ensure_ascii=False), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "najwyżej jeden element"):
+                load_json(str(path))
+
+    def test_pusty_obiekt_sekcji_jest_odrzucany(self) -> None:
+        row = {column: "wartość" for column in EXPECTED_COLUMNS[:35]}
+        row["Pomieszczenia przynależne"] = [{}]
+        row["Prawa niezbędne do korzystania"] = []
+        row["Inne świadczenia pieniężne"] = []
+
+        with tempfile.TemporaryDirectory(dir=".") as directory:
+            path = Path(directory) / "empty-item.json"
+            path.write_text(json.dumps([{"rekord": row}], ensure_ascii=False), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "brakujące pola"):
+                load_json(str(path))
+
 
 if __name__ == "__main__":
     unittest.main()

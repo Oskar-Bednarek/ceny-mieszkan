@@ -3,15 +3,27 @@
 ## Przepływ
 
 1. GitHub Actions uruchamia generator raz dziennie.
-2. Generator odczytuje Excel albo JSON wskazany w konfiguracji.
-3. Dane przechodzą walidację dokładnego schematu 48 kolumn.
+2. Generator pobiera JSON z widoku `dane_gov_api.oferty` w Supabase.
+3. Model aplikacji jest normalizowany i przechodzi walidację schematu 48 kolumn.
 4. Powstaje niezmienny CSV w `csv/<rok>/`.
 5. XML jest budowany ze wszystkich istniejących dziennych CSV.
 6. Portal dane.gov.pl pobiera XML, MD5 i wskazane w nim zasoby.
 
-Źródło danych i miejsce publikacji CSV są od siebie niezależne. JSON może być
-przechowywany w Cloudflare R2, podczas gdy CSV pozostają na GitHub Pages, albo
-oba rodzaje plików mogą docelowo trafić do R2.
+Lokalny Excel pozostaje źródłem awaryjnym. Źródło danych i miejsce publikacji
+CSV są od siebie niezależne, dzięki czemu przyszła migracja plików publicznych
+do R2 nie wymaga zmiany modelu danych.
+
+## Granice odpowiedzialności
+
+- Supabase przechowuje dane biznesowe i wystawia publiczny widok tylko do odczytu.
+- `data_sources.py` odpowiada za transport i translację modelu aplikacji.
+- `data_schema.py` jest jedynym źródłem prawdy dla kolejności kolumn CSV.
+- `excel_to_xml.py` tworzy niezmienny dzienny CSV oraz indeks XML i MD5.
+- GitHub Pages udostępnia wyłącznie publiczne rezultaty publikacji.
+
+Sekcja zagnieżdżona może zawierać maksymalnie jeden element. Nieznane pola,
+brak wymaganych pól albo większa liczba elementów kończą workflow błędem zamiast
+powodować cichą utratę danych.
 
 ## Polityka awaryjna
 

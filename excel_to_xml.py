@@ -62,21 +62,13 @@ def csv_url(data_publikacji: str) -> str:
 
 
 # ==================== FUNKCJE ====================
-def wczytaj_excel(sciezka_excel: str) -> pd.DataFrame:
-    """Wczytuje dane z pliku Excel."""
-    print(f"-> Wczytuję dane z: {sciezka_excel}")
-    df = pd.read_excel(sciezka_excel)
-    print(f"-> Wczytano {len(df)} lokali")
-    return df
-
-
 def wczytaj_dane(source_type: str = SOURCE_TYPE, location: str = SOURCE_LOCATION) -> pd.DataFrame:
     """Wczytuje i waliduje dane z Excela albo JSON-u (lokalnego lub HTTPS)."""
     source_label = "skonfigurowany endpoint HTTPS" if location.startswith("https://") else location
     print(f"-> Wczytuję źródło {source_type}: {source_label}")
     df = load_source(source_type, location)
     validate_schema(df)
-    print(f"-> Wczytano {len(df)} lokali; schemat 48 kolumn jest poprawny")
+    print(f"-> Wczytano {len(df)} rekordów; schemat 48 kolumn jest poprawny")
     return df
 
 
