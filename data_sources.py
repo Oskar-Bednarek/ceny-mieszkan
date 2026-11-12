@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 import pandas as pd
@@ -29,12 +30,22 @@ def load_json(location: str) -> pd.DataFrame:
             "Accept": "application/json",
             "Accept-Profile": os.getenv("DATA_SOURCE_SUPABASE_SCHEMA", "dane_gov_api"),
         }
-        api_key = os.getenv("DATA_SOURCE_API_KEY")
+        api_key = os.getenv("DATA_SOURCE_API_KEY", "").strip()
         if api_key:
             headers["apikey"] = api_key
         request = Request(location, headers=headers)
-        with urlopen(request, timeout=30) as response:  # noqa: S310 - URL jest konfiguracją operatora
-            payload = json.load(response)
+        try:
+            with urlopen(request, timeout=30) as response:  # noqa: S310 - URL jest konfiguracją operatora
+                payload = json.load(response)
+        except HTTPError as error:
+            # Supabase zwraca w treści bezpieczny komunikat diagnostyczny, np.
+            # "Invalid API key" albo "permission denied for ...". Nie pokazujemy
+            # URL-a ani nagłówków żądania, ponieważ pochodzą z GitHub Secrets.
+            response_body = error.read().decode("utf-8", errors="replace").strip()
+            detail = response_body[:1000] if response_body else error.reason
+            raise RuntimeError(
+                f"Endpoint danych odrzucił żądanie (HTTP {error.code}): {detail}"
+            ) from error
     else:
         with Path(location).open(encoding="utf-8") as source:
             payload = json.load(source)
