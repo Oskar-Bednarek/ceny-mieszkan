@@ -1,9 +1,10 @@
 # ceny-mieszkan
 Automatyzacja danych dla portalu dane.gov.pl
 
-Generator wczytuje dane z `Kerim_Dane_ceny_mieszkan_nowa_struktura.xlsx` i
+Generator w GitHub Actions wczytuje dane z chronionego endpointu Supabase i
 zapisuje codzienny, niezmienny stan jako CSV w katalogu `csv/<rok>`. Istniejący
-CSV dla danej daty nigdy nie jest nadpisywany.
+CSV dla danej daty nigdy nie jest nadpisywany. Lokalnie domyślnym źródłem
+pozostaje `Kerim_Dane_ceny_mieszkan_nowa_struktura.xlsx`.
 
 Główny plik `kerim-ceny-mieszkan.xml` zawiera jeden zbiór danych i wszystkie
 historyczne oraz przyszłe pliki CSV znalezione w katalogu `csv`. Rozpoczęcie
@@ -21,10 +22,17 @@ kodu, ustawiając zmienne środowiskowe:
 - `DATA_SOURCE_LOCATION` — ścieżka lokalna albo, dla JSON-u, publiczny URL HTTPS,
 - `PUBLIC_BASE_URL` — bazowy adres opublikowanych plików CSV.
 
-JSON może być tablicą rekordów albo obiektem `{"data": [...]}`. Nazwy i
-kolejność wszystkich 48 pól są walidowane przed utworzeniem CSV. Oznacza to,
-że przyszła aplikacja może wystawić dane jako publiczny JSON w Cloudflare R2,
-a przełączenie generatora będzie wymagało tylko konfiguracji workflow.
+JSON może być tablicą rekordów, obiektem `{"data": [...]}` albo odpowiedzią
+Supabase `[{"rekord": {...}}]`. Nazwy wszystkich 48 pól są walidowane przed
+utworzeniem CSV, a kolejność jest normalizowana do oficjalnego schematu.
+
+Workflow korzysta z sekretów repozytorium:
+
+- `DANE_GOV_SUPABASE_URL` — pełny URL endpointu REST,
+- `DANE_GOV_SUPABASE_PUBLISHABLE_KEY` — publishable key przesyłany w nagłówku
+  `apikey`.
+
+Wartości sekretów nie mogą być wpisywane do kodu ani wypisywane w logach.
 
 Przykład lokalny:
 

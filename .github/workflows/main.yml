@@ -23,6 +23,10 @@ jobs:
     timeout-minutes: 10
     env:
       TZ: Europe/Warsaw
+      DATA_SOURCE_TYPE: json
+      DATA_SOURCE_LOCATION: ${{ secrets.DANE_GOV_SUPABASE_URL }}
+      DATA_SOURCE_API_KEY: ${{ secrets.DANE_GOV_SUPABASE_PUBLISHABLE_KEY }}
+      DATA_SOURCE_SUPABASE_SCHEMA: dane_gov_api
     
     steps:
       - name: Checkout repository

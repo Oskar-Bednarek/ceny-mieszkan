@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import json
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 import pandas as pd
 
@@ -60,6 +61,33 @@ class GeneratorXmlTest(unittest.TestCase):
         validate_schema(frame)
         self.assertEqual(len(frame), 1)
         self.assertEqual(list(frame.columns), EXPECTED_COLUMNS)
+
+    def test_odpowiedz_supabase_jest_rozpakowana_i_uporzadkowana(self) -> None:
+        row = {column: f"wartość-{index}" for index, column in enumerate(reversed(EXPECTED_COLUMNS))}
+        with tempfile.TemporaryDirectory(dir=".") as directory:
+            path = Path(directory) / "supabase.json"
+            path.write_text(json.dumps([{"rekord": row}], ensure_ascii=False), encoding="utf-8")
+            frame = load_json(str(path))
+
+        validate_schema(frame)
+        self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[-1]], "wartość-0")
+
+    def test_zdalne_zrodlo_dodaje_naglowki_supabase(self) -> None:
+        row = {column: f"wartość-{index}" for index, column in enumerate(EXPECTED_COLUMNS)}
+        response = tempfile.SpooledTemporaryFile()
+        response.write(json.dumps([{"rekord": row}], ensure_ascii=False).encode("utf-8"))
+        response.seek(0)
+
+        with (
+            patch.dict("os.environ", {"DATA_SOURCE_API_KEY": "test-publishable-key"}),
+            patch("data_sources.urlopen", return_value=response) as mocked_urlopen,
+        ):
+            frame = load_json("https://example.supabase.co/rest/v1/oferty?select=rekord")
+
+        request = mocked_urlopen.call_args.args[0]
+        self.assertEqual(request.get_header("Apikey"), "test-publishable-key")
+        self.assertEqual(request.get_header("Accept-profile"), "dane_gov_api")
+        validate_schema(frame)
 
     def test_pusty_json_daje_csv_z_pelnym_schematem(self) -> None:
         with tempfile.TemporaryDirectory(dir=".") as directory:

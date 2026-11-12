@@ -72,7 +72,8 @@ def wczytaj_excel(sciezka_excel: str) -> pd.DataFrame:
 
 def wczytaj_dane(source_type: str = SOURCE_TYPE, location: str = SOURCE_LOCATION) -> pd.DataFrame:
     """Wczytuje i waliduje dane z Excela albo JSON-u (lokalnego lub HTTPS)."""
-    print(f"-> Wczytuję źródło {source_type}: {location}")
+    source_label = "skonfigurowany endpoint HTTPS" if location.startswith("https://") else location
+    print(f"-> Wczytuję źródło {source_type}: {source_label}")
     df = load_source(source_type, location)
     validate_schema(df)
     print(f"-> Wczytano {len(df)} lokali; schemat 48 kolumn jest poprawny")

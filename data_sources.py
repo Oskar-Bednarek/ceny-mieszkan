@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 import pandas as pd
 
@@ -17,13 +18,22 @@ def load_excel(path: str) -> pd.DataFrame:
 
 
 def load_json(location: str) -> pd.DataFrame:
-    """Wczytuje tablicę rekordów JSON z pliku lub publicznego URL-a.
+    """Wczytuje tablicę rekordów JSON z pliku lub chronionego URL-a.
 
-    Akceptowane są zarówno ``[{...}]``, jak i ``{"data": [{...}]}``.
-    Dzięki obsłudze HTTPS źródłem może być publiczny obiekt Cloudflare R2.
+    Akceptowane są ``[{...}]``, ``{"data": [{...}]}`` oraz odpowiedź
+    Supabase ``[{"rekord": {...}}]``. Dla zdalnego źródła klucz API jest
+    pobierany wyłącznie ze zmiennej środowiskowej ``DATA_SOURCE_API_KEY``.
     """
     if location.startswith(("https://", "http://")):
-        with urlopen(location, timeout=30) as response:  # noqa: S310 - URL jest konfiguracją operatora
+        headers = {
+            "Accept": "application/json",
+            "Accept-Profile": os.getenv("DATA_SOURCE_SUPABASE_SCHEMA", "dane_gov_api"),
+        }
+        api_key = os.getenv("DATA_SOURCE_API_KEY")
+        if api_key:
+            headers["apikey"] = api_key
+        request = Request(location, headers=headers)
+        with urlopen(request, timeout=30) as response:  # noqa: S310 - URL jest konfiguracją operatora
             payload = json.load(response)
     else:
         with Path(location).open(encoding="utf-8") as source:
@@ -32,11 +42,23 @@ def load_json(location: str) -> pd.DataFrame:
     records = payload.get("data") if isinstance(payload, dict) else payload
     if not isinstance(records, list):
         raise ValueError("JSON musi być tablicą rekordów lub obiektem z tablicą w polu 'data'.")
+
+    if records and all(
+        isinstance(row, dict) and isinstance(row.get("rekord"), dict)
+        for row in records
+    ):
+        records = [row["rekord"] for row in records]
+
     if not records:
         # Pusta, ale poprawnie odczytana lista oznacza brak dostępnych lokali.
         # Zachowujemy pełny schemat, aby powstał CSV zawierający same nagłówki.
         return pd.DataFrame(columns=EXPECTED_COLUMNS)
-    return pd.DataFrame.from_records(records)
+    frame = pd.DataFrame.from_records(records)
+    if set(frame.columns) == set(EXPECTED_COLUMNS):
+        # Obiekty jsonb nie gwarantują kolejności kluczy. CSV zawsze musi mieć
+        # kolejność kolumn określoną przez obowiązujący schemat.
+        frame = frame.reindex(columns=EXPECTED_COLUMNS)
+    return frame
 
 
 def load_source(source_type: str, location: str) -> pd.DataFrame:
