@@ -131,6 +131,24 @@ class GeneratorXmlTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Nieprawidłowa sekcja"):
                 load_json(str(path))
 
+    def test_skrocony_identyfikator_lokalu_jest_mapowany_w_kontekscie_sekcji(self) -> None:
+        row = {column: "wartość" for column in EXPECTED_COLUMNS[:35]}
+        right = {column: "wartość" for column in EXPECTED_COLUMNS[40:44]}
+        right["Identyfikator lokalu mieszkalnego albo domu jednorodzinnego"] = right.pop(
+            EXPECTED_COLUMNS[43]
+        )
+        row["Pomieszczenia przynależne"] = []
+        row["Prawa niezbędne do korzystania"] = [right]
+        row["Inne świadczenia pieniężne"] = []
+
+        with tempfile.TemporaryDirectory(dir=".") as directory:
+            path = Path(directory) / "section-alias.json"
+            path.write_text(json.dumps([{"rekord": row}], ensure_ascii=False), encoding="utf-8")
+            frame = load_json(str(path))
+
+        validate_schema(frame)
+        self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[43]], "wartość")
+
     def test_wiecej_niz_jeden_element_sekcji_jest_odrzucany(self) -> None:
         row = {column: "wartość" for column in EXPECTED_COLUMNS[:35]}
         item = {column: "wartość" for column in EXPECTED_COLUMNS[35:40]}

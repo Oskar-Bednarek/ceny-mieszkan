@@ -37,6 +37,19 @@ NESTED_SECTIONS = {
     "Inne świadczenia pieniężne": EXPECTED_COLUMNS[44:48],
 }
 
+GENERIC_LOCAL_ID = "Identyfikator lokalu mieszkalnego albo domu jednorodzinnego"
+SECTION_FIELD_ALIASES = {
+    "Pomieszczenia przynależne": {
+        GENERIC_LOCAL_ID: EXPECTED_COLUMNS[39],
+    },
+    "Prawa niezbędne do korzystania": {
+        GENERIC_LOCAL_ID: EXPECTED_COLUMNS[43],
+    },
+    "Inne świadczenia pieniężne": {
+        GENERIC_LOCAL_ID: EXPECTED_COLUMNS[47],
+    },
+}
+
 
 def _as_items(section_name: str, value: object) -> list[dict]:
     """Normalizuje opcjonalną sekcję aplikacji do listy obiektów."""
@@ -77,7 +90,11 @@ def _normalize_app_record(record: dict) -> list[dict]:
             items = sections[section_name]
             has_item = index < len(items)
             item = items[index] if has_item else {}
-            normalized_item = {COLUMN_ALIASES.get(key, key): value for key, value in item.items()}
+            section_aliases = SECTION_FIELD_ALIASES[section_name]
+            normalized_item = {
+                section_aliases.get(key, COLUMN_ALIASES.get(key, key)): value
+                for key, value in item.items()
+            }
             if has_item and set(normalized_item) != set(columns):
                 missing = sorted(set(columns) - set(normalized_item))
                 extra = sorted(set(normalized_item) - set(columns))
