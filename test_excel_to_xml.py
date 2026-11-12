@@ -99,6 +99,26 @@ class GeneratorXmlTest(unittest.TestCase):
         self.assertTrue(frame.empty)
         self.assertEqual(list(frame.columns), EXPECTED_COLUMNS)
 
+    def test_model_aplikacji_jest_splaszczany_do_oficjalnego_schematu(self) -> None:
+        row = {column: f"wartość-{index}" for index, column in enumerate(EXPECTED_COLUMNS[:35])}
+        row["Numer identyfikacji podatkowej (NIP)"] = row.pop(
+            "Numer Identyfikacji Podatkowej (NIP)"
+        )
+        row["Pomieszczenia przynależne"] = [
+            {column: f"pomieszczenie-{index}" for index, column in enumerate(EXPECTED_COLUMNS[35:40])}
+        ]
+        row["Prawa niezbędne do korzystania"] = []
+        row["Inne świadczenia pieniężne"] = []
+
+        with tempfile.TemporaryDirectory(dir=".") as directory:
+            path = Path(directory) / "app.json"
+            path.write_text(json.dumps([{"rekord": row}], ensure_ascii=False), encoding="utf-8")
+            frame = load_json(str(path))
+
+        validate_schema(frame)
+        self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[35]], "pomieszczenie-0")
+        self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[40]], "X")
+
 
 if __name__ == "__main__":
     unittest.main()

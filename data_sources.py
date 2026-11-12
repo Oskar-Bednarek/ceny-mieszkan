@@ -13,6 +13,70 @@ import pandas as pd
 from data_schema import EXPECTED_COLUMNS
 
 
+COLUMN_ALIASES = {
+    "Numer identyfikacji podatkowej (NIP)": "Numer Identyfikacji Podatkowej (NIP)",
+    **{
+        f"{prefix} adresu siedziby albo głównego miejsca wykonywania działalności gospodarczej":
+        f"{prefix} adresu siedziby albo głównego miejsca wykonywania działalności"
+        for prefix in (
+            "Województwo", "Powiat", "Gmina", "Miejscowość", "Ulica",
+            "Numer nieruchomości", "Numer lokalu", "Kod pocztowy",
+        )
+    },
+    "Długość geograficzna punktu określającego lokalizację przedsięwzięcia deweloperskiego lub zadania inwestycyjnego":
+        "Długość geograficzna punktu określającego lokalizację przestrzenną przedsięwzięcia deweloperskiego albo zadania inwestycyjnego",
+    "Szerokość geograficzna punktu określającego lokalizację przedsięwzięcia deweloperskiego lub zadania inwestycyjnego":
+        "Szerokość geograficzna punktu określającego lokalizację przestrzenną przedsięwzięcia deweloperskiego albo zadania inwestycyjnego",
+    "Data i czas, od których obowiązuje cena lokalu mieszkalnego albo domu jednorodzinnego lub ich części będących przedmiotem umowy":
+        "Data i czas, od których obowiązuje cena lokalu mieszkalnego albo domu jednorodzinnego lub ich części",
+}
+
+NESTED_SECTIONS = {
+    "Pomieszczenia przynależne": EXPECTED_COLUMNS[35:40],
+    "Prawa niezbędne do korzystania": EXPECTED_COLUMNS[40:44],
+    "Inne świadczenia pieniężne": EXPECTED_COLUMNS[44:48],
+}
+
+
+def _as_items(value: object) -> list[dict]:
+    """Normalizuje opcjonalną sekcję aplikacji do listy obiektów."""
+    if value in (None, "", "X"):
+        return []
+    if isinstance(value, dict):
+        return [value]
+    if isinstance(value, list) and all(isinstance(item, dict) for item in value):
+        return value
+    raise ValueError("Sekcja zagnieżdżona JSON musi być obiektem, tablicą obiektów albo pusta.")
+
+
+def _normalize_app_record(record: dict) -> list[dict]:
+    """Zamienia model aplikacji na płaskie wiersze oficjalnego CSV."""
+    base = {
+        COLUMN_ALIASES.get(key, key): value
+        for key, value in record.items()
+        if key not in NESTED_SECTIONS
+    }
+    if not any(name in record for name in NESTED_SECTIONS):
+        return [base]
+
+    sections = {
+        name: _as_items(record.get(name))
+        for name in NESTED_SECTIONS
+    }
+    row_count = max((len(items) for items in sections.values()), default=0) or 1
+    rows = []
+    for index in range(row_count):
+        row = dict(base)
+        for section_name, columns in NESTED_SECTIONS.items():
+            items = sections[section_name]
+            item = items[index] if index < len(items) else {}
+            normalized_item = {COLUMN_ALIASES.get(key, key): value for key, value in item.items()}
+            for column in columns:
+                row[column] = normalized_item.get(column, "X")
+        rows.append(row)
+    return rows
+
+
 def load_excel(path: str) -> pd.DataFrame:
     """Wczytuje arkusz Excel."""
     return pd.read_excel(path)
@@ -64,7 +128,13 @@ def load_json(location: str) -> pd.DataFrame:
         # Pusta, ale poprawnie odczytana lista oznacza brak dostępnych lokali.
         # Zachowujemy pełny schemat, aby powstał CSV zawierający same nagłówki.
         return pd.DataFrame(columns=EXPECTED_COLUMNS)
-    frame = pd.DataFrame.from_records(records)
+    normalized_records = []
+    for record in records:
+        if not isinstance(record, dict):
+            raise ValueError("Każdy rekord JSON musi być obiektem.")
+        normalized_records.extend(_normalize_app_record(record))
+
+    frame = pd.DataFrame.from_records(normalized_records)
     if set(frame.columns) == set(EXPECTED_COLUMNS):
         # Obiekty jsonb nie gwarantują kolejności kluczy. CSV zawsze musi mieć
         # kolejność kolumn określoną przez obowiązujący schemat.
