@@ -149,6 +149,27 @@ class GeneratorXmlTest(unittest.TestCase):
         validate_schema(frame)
         self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[43]], "wartość")
 
+    def test_plaski_model_uzupelnia_identyfikatory_lokalu_dla_sekcji(self) -> None:
+        row = {column: "X" for column in EXPECTED_COLUMNS}
+        for column in EXPECTED_COLUMNS[:35]:
+            row[column] = "wartość"
+        row[EXPECTED_COLUMNS[30]] = "L-1"
+        row[EXPECTED_COLUMNS[40]] = "Udział w działce drogowej"
+        row[EXPECTED_COLUMNS[41]] = 5000
+        row[EXPECTED_COLUMNS[42]] = "2026-09-24 00:00:00"
+        for column in (EXPECTED_COLUMNS[39], EXPECTED_COLUMNS[43], EXPECTED_COLUMNS[47]):
+            row.pop(column)
+
+        with tempfile.TemporaryDirectory(dir=".") as directory:
+            path = Path(directory) / "flat.json"
+            path.write_text(json.dumps([{"rekord": row}], ensure_ascii=False), encoding="utf-8")
+            frame = load_json(str(path))
+
+        validate_schema(frame)
+        self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[39]], "X")
+        self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[43]], "L-1")
+        self.assertEqual(frame.iloc[0][EXPECTED_COLUMNS[47]], "X")
+
     def test_wiecej_niz_jeden_element_sekcji_jest_odrzucany(self) -> None:
         row = {column: "wartość" for column in EXPECTED_COLUMNS[:35]}
         item = {column: "wartość" for column in EXPECTED_COLUMNS[35:40]}

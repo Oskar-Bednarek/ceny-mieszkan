@@ -50,6 +50,30 @@ SECTION_FIELD_ALIASES = {
     },
 }
 
+MAIN_LOCAL_ID_COLUMN = EXPECTED_COLUMNS[30]
+FLAT_SECTION_COLUMNS = (
+    EXPECTED_COLUMNS[35:40],
+    EXPECTED_COLUMNS[40:44],
+    EXPECTED_COLUMNS[44:48],
+)
+
+
+def _has_value(value: object) -> bool:
+    return value not in (None, "", "X")
+
+
+def _fill_flat_section_local_ids(record: dict) -> dict:
+    """Uzupełnia powiązanie dodatku z jedynym lokalem opisanym rekordem."""
+    normalized = dict(record)
+    main_local_id = normalized.get(MAIN_LOCAL_ID_COLUMN)
+    for columns in FLAT_SECTION_COLUMNS:
+        assigned_local_id_column = columns[-1]
+        if assigned_local_id_column in normalized:
+            continue
+        section_has_data = any(_has_value(normalized.get(column)) for column in columns[:-1])
+        normalized[assigned_local_id_column] = main_local_id if section_has_data else "X"
+    return normalized
+
 
 def _as_items(section_name: str, value: object) -> list[dict]:
     """Normalizuje opcjonalną sekcję aplikacji do listy obiektów."""
@@ -76,7 +100,7 @@ def _normalize_app_record(record: dict) -> list[dict]:
         if key not in NESTED_SECTIONS
     }
     if not any(name in record for name in NESTED_SECTIONS):
-        return [base]
+        return [_fill_flat_section_local_ids(base)]
 
     sections = {
         name: _as_items(name, record.get(name))
