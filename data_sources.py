@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
@@ -56,10 +57,33 @@ FLAT_SECTION_COLUMNS = (
     EXPECTED_COLUMNS[40:44],
     EXPECTED_COLUMNS[44:48],
 )
+MONEY_COLUMNS = tuple(EXPECTED_COLUMNS[index] for index in (31, 33, 37, 41, 45))
 
 
 def _has_value(value: object) -> bool:
     return value not in (None, "", "X")
+
+
+def _normalize_empty_value(value: object) -> object:
+    """Zamienia brak danych na znak specjalny publikowany w XML-u."""
+    if value is None or (isinstance(value, str) and not value.strip()):
+        return "X"
+    try:
+        if pd.isna(value):
+            return "X"
+    except (TypeError, ValueError):
+        pass
+    return value
+
+
+def _format_money(value: object, column: str) -> str:
+    """Zapisuje kwotę z dokładnością do dwóch miejsc po przecinku."""
+    if value == "X":
+        return "X"
+    try:
+        return f"{Decimal(str(value)):.2f}"
+    except (InvalidOperation, ValueError) as error:
+        raise ValueError(f"Nieprawidłowa kwota w kolumnie {column!r}: {value!r}.") from error
 
 
 def _fill_flat_section_local_ids(record: dict) -> dict:
@@ -194,10 +218,14 @@ def load_json(location: str) -> pd.DataFrame:
         normalized_records.extend(_normalize_app_record(record))
 
     frame = pd.DataFrame.from_records(normalized_records)
-    if set(frame.columns) == set(EXPECTED_COLUMNS):
-        # Obiekty jsonb nie gwarantują kolejności kluczy. CSV zawsze musi mieć
-        # kolejność kolumn określoną przez obowiązujący schemat.
+    if set(frame.columns).issubset(EXPECTED_COLUMNS):
+        # Obiekty jsonb nie gwarantują kolejności ani obecności pustych kluczy.
+        # CSV zawsze zachowuje pełny oficjalny schemat.
         frame = frame.reindex(columns=EXPECTED_COLUMNS)
+    frame = frame.map(_normalize_empty_value)
+    for column in MONEY_COLUMNS:
+        if column in frame.columns:
+            frame[column] = frame[column].map(lambda value, name=column: _format_money(value, name))
     return frame
 
 

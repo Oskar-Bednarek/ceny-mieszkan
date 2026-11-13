@@ -67,6 +67,10 @@ jeden obiekt z kompletem oficjalnych pól tej sekcji. Nieznane lub brakujące
 pola oraz drugi element zatrzymują publikację. Pusta sekcja jest zapisywana w
 CSV jako `X`.
 
+W płaskim modelu JSON pominięte pola, `null` i puste teksty są awaryjnie
+zamieniane na `X`. Ceny i wartości pieniężne są zapisywane z dwoma miejscami
+po przecinku; prawdziwa wartość `0` pozostaje kwotą `0.00`.
+
 ## Uruchomienie lokalne
 
 Domyślnie generator korzysta z lokalnego Excela:
