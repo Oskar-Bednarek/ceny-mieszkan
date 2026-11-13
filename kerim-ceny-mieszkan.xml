@@ -8709,6 +8709,28 @@
         <hasResearchData>false</hasResearchData>
         <containsProtectedData>false</containsProtectedData>
       </resource>
+      <resource status="published">
+        <extIdent>kerim_dane_20261113</extIdent>
+        <url>https://oskar-bednarek.github.io/ceny-mieszkan/csv/2026/Kerim-ceny-mieszkan-2026-11-13.csv</url>
+        <title>
+          <polish>Ceny ofertowe mieszkań dewelopera Kerim 2026-11-13</polish>
+          <english>Offer prices for developer's apartments Kerim 2026-11-13</english>
+        </title>
+        <description>
+          <polish>Dane dotyczące cen ofertowych mieszkań dewelopera Kerim według stanu na dzień 2026-11-13, przekazane zgodnie z art. 19b ust. 1 ustawy z dnia 20 maja 2021 r. o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego oraz Deweloperskim Funduszu Gwarancyjnym (Dz. U. z 2026 r. poz. 880 i 1077). Struktura danych jest zgodna z rozporządzeniem Ministra Cyfryzacji z dnia 10 listopada 2026 r. w sprawie struktury danych zawartych w informacjach dotyczących sprzedaży lokali mieszkalnych i domów jednorodzinnych (Dz. U. z 2026 r. poz. 1489).</polish>
+          <english>Data on offer prices of apartments of the developer Kerim, current as of 2026-11-13, provided pursuant to Article 19b(1) of the Act of 20 May 2021 on the protection of the rights of buyers of residential premises or single-family houses and the Developer Guarantee Fund (Journal of Laws of 2026, items 880 and 1077). The data follows the structure specified in the Regulation of the Minister of Digital Affairs of 10 November 2026 (Journal of Laws of 2026, item 1489).</english>
+        </description>
+        <availability>local</availability>
+        <dataDate>2026-11-13</dataDate>
+        <specialSigns>
+          <specialSign>X</specialSign>
+        </specialSigns>
+        <hasDynamicData>false</hasDynamicData>
+        <hasHighValueData>true</hasHighValueData>
+        <hasHighValueDataFromEuropeanCommissionList>false</hasHighValueDataFromEuropeanCommissionList>
+        <hasResearchData>false</hasResearchData>
+        <containsProtectedData>false</containsProtectedData>
+      </resource>
     </resources>
     <tags>
       <tag lang="pl">Deweloper</tag>
